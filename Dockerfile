@@ -1,5 +1,10 @@
 FROM ubuntu:latest
 
+LABEL org.opencontainers.image.source=https://github.com/stefanoschrs/vibe-sandbox
+LABEL org.opencontainers.image.description="A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports Claude Code CLI (Anthropic) and/or OpenAI Codex CLI — mount your project and credentials, and start coding."
+LABEL org.opencontainers.image.authors="Stefanos Chrs <root@stefanoschrs.com>"
+LABEL org.opencontainers.image.licenses=MIT
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && apt-get install -y \
