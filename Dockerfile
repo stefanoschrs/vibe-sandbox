@@ -40,4 +40,10 @@ RUN npm i -g @openai/codex
 RUN curl -fsSL https://claude.ai/install.sh | bash
 ENV PATH="/root/.local/bin:$PATH"
 
-CMD ["bash"]
+# — Install Cursor Agent CLI
+RUN curl https://cursor.com/install -fsS | bash
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]

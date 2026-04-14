@@ -1,6 +1,6 @@
 # vibe-sandbox
 
-A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports **Claude Code CLI** (Anthropic) and/or **OpenAI Codex CLI** — mount your project and credentials, and start coding.
+A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports **Claude Code CLI** (Anthropic), **OpenAI Codex CLI**, and **Cursor Agent CLI** — mount your project and credentials, and start coding.
 
 ## What's inside
 
@@ -9,6 +9,17 @@ A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports *
 - Go 1.25.4
 - [Claude Code CLI](https://claude.ai/code) — `claude`
 - [OpenAI Codex CLI](https://github.com/openai/codex) — `codex`
+- [Cursor Agent CLI](https://cursor.com) — `agent`
+
+### Bypass aliases
+
+The sandbox ships with convenience aliases that run each tool in fully autonomous / no-approval mode:
+
+| Alias | Expands to |
+|-------|-----------|
+| `claudee` | `IS_SANDBOX=1 claude --dangerously-skip-permissions` |
+| `codexx` | `codex --dangerously-bypass-approvals-and-sandbox` |
+| `agentt` | `agent --yolo` |
 
 ---
 
@@ -18,6 +29,7 @@ A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports *
 - API credentials for the CLI(s) you intend to use:
   - **Claude Code**: `~/.claude/` directory & `~/.claude.json` file (populated after running `claude login`)
   - **OpenAI Codex**: `~/.codex/auth.json`
+  - **Cursor Agent**: `~/.cursor/` directory (populated after running `agent login`)
 
 ---
 
@@ -55,7 +67,7 @@ Inside the container, run:
 ```bash
 claude
 # or
-IS_SANDBOX=1 claude --dangerously-skip-permissions
+claudee
 ```
 
 ### OpenAI Codex only
@@ -73,16 +85,35 @@ Inside the container, run:
 ```bash
 codex
 # or
-codex --dangerously-bypass-approvals-and-sandbox
+codexx
 ```
 
-### Both Claude Code and OpenAI Codex
+### Cursor Agent only
+
+```bash
+docker run -ti --rm \
+  -v ~/.cursor:/root/.cursor \
+  -v $(pwd):/app \
+  -w /app \
+  stefanoschrs/vibe-sandbox
+```
+
+Inside the container, run:
+
+```bash
+agent
+# or
+agentt
+```
+
+### All three CLIs
 
 ```bash
 docker run -ti --rm \
   -v ~/.claude:/root/.claude \
   -v ~/.claude.json:/root/.claude.json \
   -v ~/.codex/auth.json:/root/.codex/auth.json \
+  -v ~/.cursor:/root/.cursor \
   -v $(pwd):/app \
   -w /app \
   stefanoschrs/vibe-sandbox
@@ -100,6 +131,7 @@ function vibez() {
         -v "$HOME/.codex/auth.json:/root/.codex/auth.json" \
         -v "$HOME/.claude:/root/.claude" \
         -v "$HOME/.claude.json:/root/.claude.json" \
+        -v "$HOME/.cursor:/root/.cursor" \
         -v "$(pwd):/app" \
         -w /app \
         ghcr.io/stefanoschrs/vibe-sandbox:latest
@@ -139,6 +171,14 @@ docker run -ti --rm stefanoschrs/vibe-sandbox codex login
 ```
 
 Then copy `~/.codex/auth.json` out of the container.
+
+### Cursor Agent
+
+```bash
+docker run -ti --rm stefanoschrs/vibe-sandbox agent login
+```
+
+Then copy `~/.cursor` out of the container.
 
 ---
 
