@@ -33,6 +33,10 @@ RUN wget https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
 ENV PATH="/usr/local/go/bin:${PATH}"
 RUN go version
 
+# Invalidates cached CLI layers when CACHE_BUST changes (CI publish builds).
+ARG CACHE_BUST
+RUN echo "CLI cache bust: ${CACHE_BUST}"
+
 # — Install Codex CLI (npm global)
 RUN npm i -g @openai/codex
 
