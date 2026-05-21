@@ -1,4 +1,16 @@
 #!/bin/bash
+set -e
+
+# — Optional runtime installs
+if [ "$INSTALL_RTK" = "true" ]; then
+  echo "Installing RTK..."
+  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+fi
+
+if [ "$INSTALL_OPENSPEC" = "true" ]; then
+  echo "Installing OpenSpec..."
+  npm install -g @fission-ai/openspec@latest
+fi
 
 # — Check for updates
 echo "Checking for updates..."
@@ -33,4 +45,4 @@ alias codexx='codex --dangerously-bypass-approvals-and-sandbox'
 alias agentt='agent --yolo'
 ALIASES
 
-exec bash
+exec "$@"

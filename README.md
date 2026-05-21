@@ -119,6 +119,34 @@ docker run -ti --rm \
   stefanoschrs/vibe-sandbox
 ```
 
+### Optional runtime installs
+
+Two optional packages can be installed at container startup via environment variables:
+
+| Variable | Value | Installs |
+|----------|-------|---------|
+| `INSTALL_RTK` | `true` | [RTK](https://github.com/rtk-ai/rtk) — token-optimized CLI proxy |
+| `INSTALL_OPENSPEC` | `true` | [OpenSpec](https://www.npmjs.com/package/@fission-ai/openspec) — OpenAPI spec tool |
+
+```bash
+# Install RTK at startup
+docker run -ti --rm \
+  -e INSTALL_RTK=true \
+  -v ~/.claude:/root/.claude \
+  -v ~/.claude.json:/root/.claude.json \
+  -v $(pwd):/app \
+  -w /app \
+  ghcr.io/stefanoschrs/vibe-sandbox:latest
+
+# Install both
+docker run -ti --rm \
+  -e INSTALL_RTK=true \
+  -e INSTALL_OPENSPEC=true \
+  -v $(pwd):/app \
+  -w /app \
+  ghcr.io/stefanoschrs/vibe-sandbox:latest
+```
+
 ---
 
 ## Shell alias (quick access)
