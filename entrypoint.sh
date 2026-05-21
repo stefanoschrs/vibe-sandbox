@@ -13,27 +13,43 @@ if [ "$INSTALL_OPENSPEC" = "true" ]; then
 fi
 
 # — Check for updates
-echo "Checking for updates..."
+check_timeout="${UPDATE_CHECK_TIMEOUT:-5s}"
 
-# Codex (npm-based)
-codex_current=$(codex --version 2>/dev/null | awk '{print $NF}')
-codex_latest=$(npm view @openai/codex version 2>/dev/null)
-if [ -n "$codex_current" ] && [ -n "$codex_latest" ] && [ "$codex_current" != "$codex_latest" ]; then
-  echo "📦 Codex update available: $codex_current → $codex_latest (run: npm i -g @openai/codex)"
-fi
+get_with_timeout() {
+  timeout "$check_timeout" "$@" 2>/dev/null || true
+}
 
-# Claude Code (npm-based)
-claude_current=$(claude --version 2>/dev/null | awk '{print $1}')
-claude_latest=$(npm view @anthropic-ai/claude-code version 2>/dev/null)
-if [ -n "$claude_current" ] && [ -n "$claude_latest" ] && [ "$claude_current" != "$claude_latest" ]; then
-  echo "📦 Claude Code update available: $claude_current → $claude_latest (run: claude update)"
-fi
+if [ "$SKIP_UPDATE_CHECKS" = "true" ]; then
+  echo "Skipping update checks..."
+else
+  echo "Checking for updates..."
 
-# Cursor Agent
-agent_current=$(agent --version 2>/dev/null | head -1)
-agent_latest=$(curl -fsSL https://cursor.com/api/cli/latest-version 2>/dev/null)
-if [ -n "$agent_current" ] && [ -n "$agent_latest" ] && [ "$agent_current" != "$agent_latest" ]; then
-  echo "📦 Cursor Agent update available: $agent_current → $agent_latest (run: curl https://cursor.com/install -fsS | bash)"
+  # Codex (npm-based)
+  if command -v codex >/dev/null 2>&1; then
+    codex_current=$(get_with_timeout codex --version | awk '{print $NF}')
+    codex_latest=$(get_with_timeout npm view @openai/codex version)
+    if [ -n "$codex_current" ] && [ -n "$codex_latest" ] && [ "$codex_current" != "$codex_latest" ]; then
+      echo "📦 Codex update available: $codex_current → $codex_latest (run: npm i -g @openai/codex)"
+    fi
+  fi
+
+  # Claude Code (npm-based)
+  if command -v claude >/dev/null 2>&1; then
+    claude_current=$(get_with_timeout claude --version | awk '{print $1}')
+    claude_latest=$(get_with_timeout npm view @anthropic-ai/claude-code version)
+    if [ -n "$claude_current" ] && [ -n "$claude_latest" ] && [ "$claude_current" != "$claude_latest" ]; then
+      echo "📦 Claude Code update available: $claude_current → $claude_latest (run: claude update)"
+    fi
+  fi
+
+  # Cursor Agent
+  if command -v agent >/dev/null 2>&1; then
+    agent_current=$(get_with_timeout agent --version | sed -n '1p')
+    agent_latest=$(get_with_timeout curl -fsSL https://cursor.com/api/cli/latest-version)
+    if [ -n "$agent_current" ] && [ -n "$agent_latest" ] && [ "$agent_current" != "$agent_latest" ]; then
+      echo "📦 Cursor Agent update available: $agent_current → $agent_latest (run: curl https://cursor.com/install -fsS | bash)"
+    fi
+  fi
 fi
 
 echo ""
