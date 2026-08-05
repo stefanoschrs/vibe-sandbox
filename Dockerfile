@@ -25,7 +25,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 RUN node --version && npm --version
 
 # — Install Golang
-ENV GOLANG_VERSION=1.25.4
+ENV GOLANG_VERSION=1.26.5
 RUN wget https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
     && rm -rf /usr/local/go \
     && tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz \
