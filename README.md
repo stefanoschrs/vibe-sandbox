@@ -6,7 +6,7 @@ A Docker-based sandbox environment for vibe coding with AI CLI tools. Supports *
 
 - Ubuntu (latest)
 - Node.js (LTS) + npm
-- Go 1.25.4
+- Go 1.27.1
 - [Claude Code CLI](https://claude.ai/code) — `claude`
 - [OpenAI Codex CLI](https://github.com/openai/codex) — `codex`
 - [Cursor Agent CLI](https://cursor.com) — `agent`
