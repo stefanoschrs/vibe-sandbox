@@ -208,6 +208,7 @@ docker run -ti --rm stefanoschrs/vibe-sandbox agent login
 
 Then copy `~/.cursor` out of the container.
 
+
 ---
 
 ## License
